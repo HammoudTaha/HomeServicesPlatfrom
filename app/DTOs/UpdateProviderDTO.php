@@ -1,0 +1,26 @@
+<?php
+
+namespace App\DTOs;
+
+class UpdateProviderDTO
+{
+    /**
+     * Create a new class instance.
+     */
+    public function __construct(public int $providerId, public ?string $firstName, public ?string $lastName, public ?string $email, public ?string $password, public ?string $address, public ?int $experienceYears, public ?int $serviceCategoryId)
+    {
+    }
+    public static function fromRequest(\App\Http\Requests\Admin\UpdateProviderRequest $request): self
+    {
+        return new self(
+            providerId: $request->input('provider_id'),
+            firstName: $request->input('first_name'),
+            lastName: $request->input('last_name'),
+            email: $request->input('email'),
+            password: $request->input('password'),
+            address: $request->input('address'),
+            experienceYears: $request->input('experience_years'),
+            serviceCategoryId: $request->input('service_category_id')
+        );
+    }
+}
