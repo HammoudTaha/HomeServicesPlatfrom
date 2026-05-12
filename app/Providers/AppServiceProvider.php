@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Routing\UrlGenerator;
+
 use Illuminate\Support\Facades\RateLimiter;
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,8 +21,11 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(UrlGenerator $url): void
     {
+        if (env('APP_ENV') == 'production') {
+            $url->forceScheme('https');
+        }
         RateLimiter::for('narrow', function (Request $request) {
             return Limit::perMinute(3)->by($request->user()?->id ?: $request->ip());
         });
