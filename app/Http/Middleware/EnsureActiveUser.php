@@ -17,7 +17,7 @@ class EnsureActiveUser
     {
         $user = $request->user();
         if ($user && !$user->is_active) {
-            return \App\Traits\APIResponse::error(message: 'Your account is inactive. Please contact support.', statusCode: 403);
+            return \App\Traits\ApiResponse::error(message: 'Your account is inactive. Please contact support.', statusCode: 403);
         }
         return $next($request);
     }

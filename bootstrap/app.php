@@ -5,7 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use App\Exceptions\BaseApiException;
-use App\Traits\APIResponse;
+use App\Traits\ApiResponse;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__ . '/../routes/web.php',
@@ -25,28 +25,28 @@ return Application::configure(basePath: dirname(__DIR__))
             return $request->is('api/*') || $request->expectsJson();
         });
         $exceptions->render(function (BaseApiException $e, Request $request) {
-            return APIResponse::error($e->getMessage(), (int) $e->statusCode);
+            return ApiResponse::error($e->getMessage(), (int) $e->statusCode);
         });
         $exceptions->render(function (\Illuminate\Validation\ValidationException $e) {
-            return APIResponse::error(
+            return ApiResponse::error(
                 'The provided data is not valid. Please enter valid data and retry again.',
                 400,
                 $e->errors()
             );
         });
         $exceptions->render(function (\Illuminate\Http\Exceptions\ThrottleRequestsException $e) {
-            return APIResponse::error('You have exceeded the number of attempts allowed. Please try again later.', 429);
+            return ApiResponse::error('You have exceeded the number of attempts allowed. Please try again later.', 429);
         });
         $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e) {
-            return APIResponse::error('You are not authenticated to perform this action.', 401);
+            return ApiResponse::error('You are not authenticated to perform this action.', 401);
         });
         $exceptions->render(function (\Illuminate\Auth\Access\AuthorizationException $e) {
-            return APIResponse::error('You are not authorized to perform this action.', 403);
+            return ApiResponse::error('You are not authorized to perform this action.', 403);
         });
         $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
-            return APIResponse::error('The requested resource was not found.', 404);
+            return ApiResponse::error('The requested resource was not found.', 404);
         });
         $exceptions->render(function (Throwable $e) {
-            return APIResponse::error('Something went wrong. Please try again later.', 500, $e->getMessage());
+            return ApiResponse::error('Something went wrong. Please try again later.', 500, $e->getMessage());
         });
     })->create();
