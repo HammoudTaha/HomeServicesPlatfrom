@@ -21,11 +21,6 @@ class AuthController extends Controller
 
     public function verifyLogin(\App\Http\Requests\Auth\VerifyLoginRequest $request)
     {
-        $request->validate([
-            'phone' => 'required|string',
-            'code' => 'required|string',
-            'login_token' => 'required|string',
-        ]);
         $dto = \App\DTOs\VerifyLoginDTO::fromRequest($request);
         $result = $this->authService->verifyLogin($dto);
         return ApiResponse::success(message: 'Admin logged in successfully', data: $result);
