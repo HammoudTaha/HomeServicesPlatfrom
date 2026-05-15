@@ -36,6 +36,11 @@ class Provider extends Authenticatable
         ];
     }
 
+    public function isSetPassword()
+    {
+        return !is_null($this->password);
+    }
+
     public function refreshTokens()
     {
         return $this->morphMany(RefreshToken::class, 'tokenable');

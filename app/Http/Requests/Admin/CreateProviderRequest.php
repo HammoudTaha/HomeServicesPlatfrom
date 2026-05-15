@@ -27,7 +27,6 @@ class CreateProviderRequest extends FormRequest
             'last_name' => 'required|string|max:20',
             'email' => 'sometimes|string|regex:/^[\w\.-]+@gmail\.com$/',
             'phone' => 'required|string|regex:/^09[0-9]{8}$/',
-            'password' => 'required|string|min:8|confirmed',
             'address' => 'required|string|max:255',
             'experience_years' => 'required|integer|min:0',
             'service_category_id' => 'required|integer|exists:service_categories,id'

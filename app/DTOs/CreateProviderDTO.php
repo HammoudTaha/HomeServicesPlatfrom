@@ -7,7 +7,7 @@ class CreateProviderDTO
     /**
      * Create a new class instance.
      */
-    public function __construct(public string $firstName, public string $lastName, public ?string $email, public string $phone, public string $password, public string $address, public int $experienceYears, public int $serviceCategoryId)
+    public function __construct(public string $firstName, public string $lastName, public ?string $email, public string $phone, public string $address, public int $experienceYears, public int $serviceCategoryId)
     {
     }
     public static function fromRequest(CreateProviderRequest $request): self
@@ -17,7 +17,6 @@ class CreateProviderDTO
             lastName: $request->input('last_name'),
             email: $request->input('email'),
             phone: $request->input('phone'),
-            password: $request->input('password'),
             address: $request->input('address'),
             experienceYears: $request->input('experience_years'),
             serviceCategoryId: $request->input('service_category_id'),

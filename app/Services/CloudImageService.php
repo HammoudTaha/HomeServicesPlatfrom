@@ -8,17 +8,21 @@ class CloudImageService
 
     public static function upload(UploadedFile $file)
     {
-        $response = Http::attach(
-            'file',
-            file_get_contents($file->getRealPath()),
-            $file->getClientOriginalName()
-        )->post('https://api.cloudinary.com/v1_1/djsiq4wxb/image/upload', [
-                    'upload_preset' => 'home_services',
-                    'folder' => 'Home Services',
-                ]);
-        if ($response->successful()) {
-            return ['url' => $response->json()['secure_url'], 'public_id' => $response->json()['public_id']];
-        } else {
+        try {
+            $response = Http::attach(
+                'file',
+                file_get_contents($file->getRealPath()),
+                $file->getClientOriginalName()
+            )->post('https://api.cloudinary.com/v1_1/djsiq4wxb/image/upload', [
+                        'upload_preset' => 'home_services',
+                        'folder' => 'Home Services',
+                    ]);
+            if ($response->successful()) {
+                return ['url' => $response->json()['secure_url'], 'public_id' => $response->json()['public_id']];
+            } else {
+                throw new \App\Exceptions\FailedProcessImageException();
+            }
+        } catch (\Exception $e) {
             throw new \App\Exceptions\FailedProcessImageException();
         }
     }

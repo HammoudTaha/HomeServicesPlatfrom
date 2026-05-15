@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
+use App\Http\Resources\ProviderResource;
 class AuthController extends Controller
 {
     public function __construct(private \App\Services\Auth\ProviderAuthService $authService)
@@ -49,4 +50,36 @@ class AuthController extends Controller
         $this->authService->resetPassword($dto);
         return ApiResponse::success(message: 'Password reset successfully');
     }
+
+    public function updateProfile(\App\Http\Requests\Provider\UpdateProviderRequest $request)
+    {
+        $dto = \App\DTOs\UpdateProviderDTO::fromRequest($request);
+        $provider = $request->user();
+
+        $updatedProvider = $this->authService->updateProfile($dto, $provider);
+        return ApiResponse::success(message: 'Profile updated successfully', data: new ProviderResource($updatedProvider));
+    }
+
+    public function setAvailableStatus(Request $request)
+    {
+        $provider = $request->user();
+        $this->authService->setAvailable($provider);
+        return ApiResponse::success(message: 'Availability status updated successfully');
+    }
+
+    public function setUnavailableStatus(Request $request)
+    {
+        $provider = $request->user();
+        $this->authService->setUnavailable($provider);
+        return ApiResponse::success(message: 'Availability status updated successfully');
+    }
+
+    public function me(Request $request)
+    {
+        return ApiResponse::success(message: 'User profile retrieved successfully', data: new ProviderResource(
+            $request->user()
+        ));
+    }
+
+
 }

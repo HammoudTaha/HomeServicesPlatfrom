@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\admin\ProviderManagementService;
 use App\Traits\ApiResponse;
+use App\Http\Resources\ProviderResource;
+use App\Models\Provider;
+
 class ProviderManagementController extends Controller
 {
+
     public function __construct(private readonly ProviderManagementService $pms)
     {
     }
@@ -16,14 +20,7 @@ class ProviderManagementController extends Controller
     {
         $dto = \App\DTOs\CreateProviderDTO::fromRequest($request);
         $result = $this->pms->createProvider($dto);
-        return ApiResponse::success(message: 'Provider created successfully', data: $result);
-    }
-
-    public function updateProvider(\App\Http\Requests\Admin\UpdateProviderRequest $request)
-    {
-        $dto = \App\DTOs\UpdateProviderDTO::fromRequest($request);
-        $this->pms->updateProvider($dto);
-        return ApiResponse::success(message: 'Provider updated successfully');
+        return ApiResponse::success(message: 'Provider created successfully', data: ProviderResource::make($result));
     }
 
     public function deleteProvider(int $id)
@@ -35,13 +32,13 @@ class ProviderManagementController extends Controller
     public function getAllProviders(Request $request)
     {
         $result = $this->pms->getAllProviders();
-        return ApiResponse::success(message: 'Providers retrieved successfully', data: $result);
+        return ApiResponse::success(message: 'Providers retrieved successfully', data: ProviderResource::collection($result));
     }
 
     public function getProviderById(int $id)
     {
         $result = $this->pms->getProviderById($id);
-        return ApiResponse::success(message: 'Provider retrieved successfully', data: $result);
+        return ApiResponse::success(message: 'Provider retrieved successfully', data: ProviderResource::make($result));
     }
 
     public function activateProvider(int $id)
@@ -58,9 +55,9 @@ class ProviderManagementController extends Controller
 
     public function searchProviders(Request $request)
     {
-        $query = $request->input('query');
+        $query = $request->input('query', '');
         $result = $this->pms->searchProviders($query);
-        return ApiResponse::success(message: 'Search completed successfully', data: $result);
+        return ApiResponse::success(message: 'Search completed successfully', data: ProviderResource::collection($result));
     }
 
 

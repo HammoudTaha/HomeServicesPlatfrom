@@ -23,9 +23,9 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|exists:service_categories,id',
-            'name' => 'sometimes|string|max:255|min:0',
-            'commission' => 'sometimes|numeric|min:0',
+            'category_id' => 'required|integer',
+            'name' => 'sometimes|string|max:255|min:0|max:255',
+            'commission' => 'sometimes|numeric|min:0|max:1000',
             'image' => 'sometimes|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ];
     }

@@ -3,8 +3,6 @@
 namespace App\Services\admin;
 use App\DTOs\CreateProviderDTO;
 use App\Models\Provider;
-use App\Models\ProviderWallet;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 class ProviderManagementService
 {
@@ -18,61 +16,49 @@ class ProviderManagementService
     public function createProvider(CreateProviderDTO $dto)
     {
         $provider = DB::transaction(function () use ($dto) {
+            if (Provider::where('phone', $dto->phone)->exists()) {
+                throw new \App\Exceptions\UserAlreadyExistsException();
+            }
             $provider = Provider::create([
                 'first_name' => $dto->firstName,
                 'last_name' => $dto->lastName,
                 'email' => $dto->email,
                 'phone' => $dto->phone,
-                'password' => Hash::make($dto->password),
                 'service_category_id' => $dto->serviceCategoryId,
                 'address' => $dto->address,
                 'experience_years' => $dto->experienceYears
             ]);
             $provider->wallet()->create([
-                'balance' => 0,
             ]);
             return $provider;
         });
-        return [
-            'provider' => $provider,
-        ];
+        $provider->refresh();
+        return $provider;
     }
     public function getAllProviders()
     {
-        return Provider::with('serviceCategory')->get();
+        return Provider::with(['serviceCategory', 'image'])->get();
     }
     public function getProviderById(int $id)
     {
-        return Provider::with('serviceCategory')->findOrFail($id);
-    }
-    public function updateProvider(\App\DTOs\UpdateProviderDTO $dto)
-    {
-        $provider = Provider::findOrFail($dto->providerId);
-        $provider->update([
-            'first_name' => $dto->firstName ?? $provider->first_name,
-            'last_name' => $dto->lastName ?? $provider->last_name,
-            'email' => $dto->email ?? $provider->email,
-            'password' => isset($dto->password) ? Hash::make($dto->password) : $provider->password,
-            'service_category_id' => $dto->serviceCategoryId ?? $provider->service_category_id,
-            'address' => $dto->address ?? $provider->address,
-            'experience_years' => $dto->experienceYears ?? $provider->experience_years
-        ]);
+        $provider = $this->isFoundProvider($id);
+        return $provider->load(['serviceCategory', 'image']);
     }
 
     public function deleteProvider(int $id)
     {
-        $provider = Provider::findOrFail($id);
+        $provider = $this->isFoundProvider($id);
         $provider->delete();
     }
     public function activateProvider(int $id)
     {
-        $provider = Provider::findOrFail($id);
+        $provider = $this->isFoundProvider($id);
         $provider->update(['is_active' => true]);
     }
 
     public function deactivateProvider(int $id)
     {
-        $provider = Provider::findOrFail($id);
+        $provider = $this->isFoundProvider($id);
         $provider->update(['is_active' => false]);
     }
 
@@ -81,6 +67,15 @@ class ProviderManagementService
         return Provider::where('first_name', 'like', "%$query%")
             ->orWhere('last_name', 'like', "%$query%")
             ->get();
+    }
+
+    private function isFoundProvider(string $id)
+    {
+        $provider = Provider::where('id', $id)->first();
+        if (!$provider) {
+            throw new \App\Exceptions\NotFoundUserException();
+        }
+        return $provider;
     }
 
 }

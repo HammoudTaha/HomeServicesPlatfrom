@@ -15,9 +15,8 @@ class ServiceCategory extends Model
         'name',
         'slug',
         'commission',
+        'is_active'
     ];
-    protected $hidden = ['is_active'];
-
     public function providers(): HasMany
     {
         return $this->hasMany(Provider::class, 'service_category_id');
