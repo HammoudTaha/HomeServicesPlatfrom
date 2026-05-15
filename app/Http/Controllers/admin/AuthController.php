@@ -9,6 +9,7 @@ class AuthController extends Controller
 {
     public function __construct(private \App\Services\Auth\AdminAuthService $authService)
     {
+
     }
     public function login(\App\Http\Requests\Auth\LoginRequest $request)
     {
