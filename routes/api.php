@@ -6,6 +6,7 @@ use App\Http\Controllers\Provider\AuthController as ProviderAuthController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\ProviderManagementController;
 use App\Http\Controllers\Admin\CategoryManagementController;
+
 Route::prefix('user/auth')->group(function () {
     Route::middleware('throttle:narrow')->group(function () {
         Route::post('/verify-phone', [UserAuthController::class, 'verifyPhone']);
