@@ -6,20 +6,32 @@ use App\Http\Controllers\Provider\AuthController as ProviderAuthController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\ProviderManagementController;
 use App\Http\Controllers\Admin\CategoryManagementController;
-
-Route::prefix('user/auth')->group(function () {
-    Route::middleware('throttle:narrow')->group(function () {
-        Route::post('/verify-phone', [UserAuthController::class, 'verifyPhone']);
-        Route::post('/login', [UserAuthController::class, 'login']);
-        Route::post('/verify-phone-for-reset-password', [UserAuthController::class, 'verifyPhoneForResetPassword']);
-        Route::post('/send-otp-code', [UserAuthController::class, 'sendOtpCode']);
-        Route::post('/refresh-tokens', [UserAuthController::class, 'refreshTokens']);
-        Route::post('/reset-password', [UserAuthController::class, 'resetPassword']);
+use App\Http\Controllers\User\ProvidersController;
+use App\Http\Controllers\User\CategoriesController;
+Route::prefix('user')->group(function () {
+    Route::prefix('auth')->group(function () {
+        Route::middleware('throttle:narrow')->group(function () {
+            Route::post('/verify-phone', [UserAuthController::class, 'verifyPhone']);
+            Route::post('/login', [UserAuthController::class, 'login']);
+            Route::post('/verify-phone-for-reset-password', [UserAuthController::class, 'verifyPhoneForResetPassword']);
+            Route::post('/send-otp-code', [UserAuthController::class, 'sendOtpCode']);
+            Route::post('/refresh-tokens', [UserAuthController::class, 'refreshTokens']);
+            Route::post('/reset-password', [UserAuthController::class, 'resetPassword']);
+        });
+        Route::post('/register', [UserAuthController::class, 'register']);
+        Route::middleware(['auth:user'])->group(function () {
+            Route::get('/me', [UserAuthController::class, 'me']);
+            Route::post('/logout', [UserAuthController::class, 'logout']);
+            Route::post('/add-address', [UserAuthController::class, 'addAddress']);
+            Route::post('/update-address', [UserAuthController::class, 'updateAddress']);
+        });
     });
-    Route::post('/register', [UserAuthController::class, 'register']);
-    Route::middleware(['auth:user'])->group(function () {
-        Route::get('/me', [UserAuthController::class, 'me']);
-        Route::post('/logout', [UserAuthController::class, 'logout']);
+    Route::prefix('category')->middleware(['auth:user'])->group(function () {
+        Route::get('/all-categories', [CategoriesController::class, 'getAllCategories']);
+    });
+    Route::prefix('provider')->middleware(['auth:user'])->group(function () {
+        Route::get('/providers-by-category/{id}', [ProvidersController::class, 'getCategoryProviders']);
+        Route::get('/details/{id}', [ProvidersController::class, 'getProviderDetails']);
     });
 });
 
@@ -38,6 +50,8 @@ Route::prefix('provider')->group(function () {
             Route::post('/update-profile', [ProviderAuthController::class, 'updateProfile']);
             Route::post('/set-available-status', [ProviderAuthController::class, 'setAvailableStatus']);
             Route::post('/set-unavailable-status', [ProviderAuthController::class, 'setUnavailableStatus']);
+            Route::post('/add-address', [ProviderAuthController::class, 'addAddress']);
+            Route::post('/update-address', [ProviderAuthController::class, 'updateAddress']);
         });
     });
 });

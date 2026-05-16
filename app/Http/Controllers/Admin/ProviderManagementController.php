@@ -4,15 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\admin\ProviderManagementService;
+use App\Services\Auth\ProviderAuthService;
 use App\Traits\ApiResponse;
 use App\Http\Resources\ProviderResource;
-use App\Models\Provider;
 
 class ProviderManagementController extends Controller
 {
 
-    public function __construct(private readonly ProviderManagementService $pms)
+    public function __construct(private readonly ProviderAuthService $pms)
     {
     }
 

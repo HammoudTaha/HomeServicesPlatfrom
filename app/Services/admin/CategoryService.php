@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use App\Models\ServiceCategory;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\FaildCategoryProcessException;
-class CategoryManagementService
+class CategoryService
 {
     /**
      * Create a new class instance.
@@ -39,6 +39,10 @@ class CategoryManagementService
     public function getAllCategories()
     {
         return ServiceCategory::with('image')->get();
+    }
+    public function getActiveCategories()
+    {
+        return ServiceCategory::where('is_active', true)->with('image')->get();
     }
     public function getCategoryById(int $id)
     {

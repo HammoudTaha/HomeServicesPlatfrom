@@ -129,4 +129,20 @@ class UserAuthService
     {
         return $this->tokenService->rotateRefreshToken($refreshToken);
     }
+    public function addAddress(\App\DTOs\AddressDTO $dto, User $user)
+    {
+        $address = $user->address->updateOrCreate([
+        ], $dto->toArray());
+        return $address;
+    }
+
+    public function updateAddress(\App\DTOs\AddressDTO $dto, User $user)
+    {
+        $address = $user->address;
+        if (!$address) {
+            throw new \App\Exceptions\NotFoundAddressException();
+        }
+        $address->update($dto->toArray());
+        return $address;
+    }
 }

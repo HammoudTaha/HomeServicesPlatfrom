@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 class CategoryManagementController extends Controller
 {
-    public function __construct(private readonly \App\Services\admin\CategoryManagementService $cms)
+    public function __construct(private readonly \App\Services\admin\CategoryService $cms)
     {
     }
 

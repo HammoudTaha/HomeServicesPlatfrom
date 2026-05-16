@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Provider;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
-use App\Http\Resources\ProviderResource;
+use App\Http\Resources\ProviderProfileResource;
+use App\Http\Resources\AddressResource;
 class AuthController extends Controller
 {
     public function __construct(private \App\Services\Auth\ProviderAuthService $authService)
@@ -55,9 +56,8 @@ class AuthController extends Controller
     {
         $dto = \App\DTOs\UpdateProviderDTO::fromRequest($request);
         $provider = $request->user();
-
         $updatedProvider = $this->authService->updateProfile($dto, $provider);
-        return ApiResponse::success(message: 'Profile updated successfully', data: new ProviderResource($updatedProvider));
+        return ApiResponse::success(message: 'Profile updated successfully', data: new ProviderProfileResource($updatedProvider));
     }
 
     public function setAvailableStatus(Request $request)
@@ -76,10 +76,24 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        return ApiResponse::success(message: 'User profile retrieved successfully', data: new ProviderResource(
+        return ApiResponse::success(message: 'User profile retrieved successfully', data: new ProviderProfileResource(
             $request->user()
         ));
     }
 
+    public function addAddress(\App\Http\Requests\Auth\AddAddressRequest $request)
+    {
+        $provider = $request->user();
+        $dto = \App\DTOs\AddressDTO::fromRequest($request);
+        $address = $this->authService->addAddress($dto, $provider);
+        return ApiResponse::success(message: 'Address added successfully', data: AddressResource::make($address));
+    }
 
+    public function updateAddress(\App\Http\Requests\Auth\UpdateAddressRequest $request)
+    {
+        $provider = $request->user();
+        $dto = \App\DTOs\AddressDTO::fromRequest($request);
+        $address = $this->authService->updateAddress($dto, $provider);
+        return ApiResponse::success(message: 'Address updated successfully', data: AddressResource::make($address));
+    }
 }

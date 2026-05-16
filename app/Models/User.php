@@ -56,5 +56,9 @@ class User extends Authenticatable
     {
         return $this->morphOne(Image::class, 'owner');
     }
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'owner');
+    }
 
 }

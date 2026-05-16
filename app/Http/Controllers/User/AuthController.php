@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use App\Traits\ApiResponse;
+use App\Http\Resources\AddressResource;
 class AuthController extends Controller
 {
     public function __construct(private \App\Services\Auth\UserAuthService $authService)
@@ -23,19 +24,6 @@ class AuthController extends Controller
         $data = $this->authService->verifyPhone($dto);
         return ApiResponse::success(message: 'Phone number verified successfully', data: $data);
     }
-    // public function upload(Request $request)
-    // {
-    //     $request->validate([
-    //         'public_id' => 'required|string',
-    //     ]);
-    //     // if (!$request->hasFile('image')) {
-    //     //     return \App\Traits\APIResponse::error(message: 'No image file provided', statusCode: 400);
-    //     // }
-    //     //$file = $request->file('image');
-    //     $response = \App\Services\CloudImageService::delete($request->input('public_id'));
-
-    //     return \App\Traits\APIResponse::success(message: 'Image uploaded successfully', data: $response);
-    // }
 
     public function verifyPhoneForResetPassword(\App\Http\Requests\Auth\VerifyPhoneRequest $request)
     {
@@ -83,5 +71,19 @@ class AuthController extends Controller
         ));
     }
 
+    public function addAddress(\App\Http\Requests\Auth\AddAddressRequest $request)
+    {
+        $user = $request->user();
+        $dto = \App\DTOs\AddressDTO::fromRequest($request);
+        $address = $this->authService->addAddress($dto, $user);
+        return ApiResponse::success(message: 'Address added successfully', data: new AddressResource($address));
+    }
 
+    public function updateAddress(\App\Http\Requests\Auth\UpdateAddressRequest $request)
+    {
+        $user = $request->user();
+        $dto = \App\DTOs\AddressDTO::fromRequest($request);
+        $address = $this->authService->updateAddress($dto, $user);
+        return ApiResponse::success(message: 'Address updated successfully', data: new AddressResource($address));
+    }
 }

@@ -32,6 +32,6 @@ class UpdateProviderDTO
             'address' => $this->address,
             'experience_years' => $this->experienceYears,
             'description' => $this->description,
-        ], fn($value) => $value !== null);
+        ], fn($value) => !is_null($value));
     }
 }

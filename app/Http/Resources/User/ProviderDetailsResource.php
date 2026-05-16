@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProviderResource extends JsonResource
+class ProviderDetailsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,20 +16,18 @@ class ProviderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'email' => $this->email,
-            'phone' => $this->phone,
+            'name' => $this->first_name . ' ' . $this->last_name,
             'service_category_id' => $this->serviceCategory?->id,
             'service_category_name' => $this->serviceCategory?->name,
-            // 'address' => $this->address,
             'experience_years' => $this->experience_years,
-            'is_active' => $this->is_active,
             'description' => $this->description,
             'image_url' => $this->image?->image_url,
             'rating' => $this->rating,
             'rating_count' => $this->rating_count,
             'is_available' => $this->is_available,
+            'address' => $this->address,
+            'services' => $this->services,
+            'reviews' => $this->reviews()->with('user')->get(),
             'created_at' => $this->created_at,
         ];
     }

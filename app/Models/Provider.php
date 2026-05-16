@@ -19,7 +19,6 @@ class Provider extends Authenticatable
         'email',
         'description',
         'experience_years',
-        'address',
         'rating',
         'service_category_id',
         'is_available',
@@ -68,6 +67,10 @@ class Provider extends Authenticatable
     public function image()
     {
         return $this->morphOne(Image::class, 'owner');
+    }
+    public function address()
+    {
+        return $this->morphOne(Address::class, 'owner');
     }
 
 }

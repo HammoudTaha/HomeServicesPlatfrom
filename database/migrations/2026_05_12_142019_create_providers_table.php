@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->string('email')->unique()->nullable();
             $table->text('description')->nullable();
             $table->integer('experience_years')->unsigned()->nullable();
-            $table->string('address');
             $table->string('password')->nullable();
             $table->boolean('is_active')->default(false);
             $table->boolean('is_available')->default(false);
